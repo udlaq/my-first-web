@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>计算机·科技工坊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
+            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+            color: #ccdeee;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        /* 霓虹边框容器 */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: rgba(12, 20, 30, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 56px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.05);
+            padding: 28px 20px 40px;
+            transition: all 0.3s;
+        }
+        h1 {
+            font-size: 1.9rem;
+            text-align: center;
+            background: linear-gradient(135deg, #aaffff, #4c9aff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .sub {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #7f9fcf;
+            margin-bottom: 28px;
+            border-bottom: 1px dashed #2c4c7c;
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 6px;
+        }
+        /* 卡片网格 */
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 24px 0;
+        }
+        .card-comp {
+            background: rgba(0, 20, 40, 0.7);
+            border-left: 4px solid #0af;
+            border-radius: 32px;
+            padding: 16px 20px;
+            transition: 0.2s;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        }
+        .card-comp:hover {
+            transform: translateY(-3px);
+            border-left-color: #f0f;
+            background: rgba(0, 30, 50, 0.8);
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .card-title span:first-child {
+            font-size: 1.8rem;
+        }
+        .card-desc {
+            font-size: 0.85rem;
+            color: #bcd;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        .tag {
+            display: inline-block;
+            background: #1e3a5f;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #aaf;
+        }
+        /* 交互区域：打字机 + 计数器 */
+        .interactive {
+            background: #07121e;
+            border-radius: 48px;
+            padding: 20px;
+            margin: 20px 0 10px;
+            border: 1px solid #2c5f8a;
+        }
+        .typewriter-box {
+            background: #010a12;
+            padding: 16px;
+            border-radius: 28px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            min-height: 85px;
+            color: #8effc2;
+            border-left: 3px solid #0fa;
+            margin-bottom: 20px;
+        }
+        .counter-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .counter {
+            background: #00000066;
+            padding: 6px 16px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        button {
+            background: linear-gradient(95deg, #1f6392, #0d3b5a);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: 0.1s linear;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+        button:active {
+            transform: scale(0.96);
+            background: #0a4a70;
+        }
+        .footer {
+            text-align: center;
+            font-size: 0.6rem;
+            margin-top: 24px;
+            color: #4c6f9c;
+        }
+        a {
+            color: #7bc5ff;
+            text-decoration: none;
+        }
+        .glow-text {
+            text-shadow: 0 0 4px cyan;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        <span>⚡</span> 计算机·工坊 <span>🖥️</span>
+    </h1>
+    <div style="text-align: center">
+        <div class="sub">// 硬件 · 编码 · 奇点临近</div>
+    </div>
+
+    <!-- 卡片网格：更高级的布局 -->
+    <div class="grid">
+        <div class="card-comp">
+            <div class="card-title">
+                <span>🐍</span> <span>编程语言</span>
+            </div>
+            <div class="card-desc">
+                Python、C、Rust —— 每种语言皆是工具与艺术。语法即思维，编译即创造。
+            </div>
+            <div class="tag">#编译原理</div>
+        </div>
+        <div class="card-comp">
+            <div class="card-title">
+                <span>🧠</span> <span>计算机硬件</span>
+            </div>
+            <div class="card-desc">
+                CPU、GPU、内存、SSD。从晶体管到微架构，硅基上的数字风暴。
+            </div>
+            <div class="tag">#冯诺依曼</div>
+        </div>
+        <div class="card-comp">
+            <div class="card-title">
+                <span>📡</span> <span>计算机历史</span>
+            </div>
+            <div class="card-desc">
+                ENIAC → 个人电脑 → 智能手机 → AI。七十年，改变世界。
+            </div>
+            <div class="tag">#图灵奖</div>
+        </div>
+    </div>
+
+    <!-- 高级交互区：动态计数器 + 打字机知识 -->
+    <div class="interactive">
+        <div class="typewriter-box" id="typewriterText">
+            点击「⚡ 获取新知」学习计算机冷知识
+        </div>
+        <div class="counter-area">
+            <div class="counter">📚 知识值: <span id="knowledgeValue">0</span></div>
+            <button id="newFactBtn">⚡ 获取新知</button>
+        </div>
+    </div>
+    <div class="footer">
+        🧬 保留生物网页: <a href="https://udlaq.github.io/my-first-web/" target="_blank">细胞小栈</a> &nbsp;|&nbsp;
+        🔧 本页 · 科技感交互
+    </div>
+</div>
+
+<script>
+    // 知识库（更有深度的计算机概念）
+    const facts = [
+        "“Hello, World!” 起源于 C 语言教程，如今成为所有程序员的第一个仪式。",
+        "世界上第一个 bug 是真正的虫子——一只飞蛾卡在哈佛马克II型继电器里。",
+        "CAP 理论：分布式系统无法同时满足一致性、可用性和分区容错性。",
+        "Git 是 Linus Torvalds 仅用一周时间开发的版本控制系统。",
+        "第一块 CPU Intel 4004 只有 2300 个晶体管，而现代 CPU 有上百亿个。",
+        "递归定义：递归 (recursion) 的详细解释请参考“递归”。",
+        "ASCII 码诞生于1963年，用7位二进制代表128个字符。",
+        "计算机科学领域的最高荣誉“图灵奖”常被称为“计算界的诺贝尔奖”。",
+        "早期硬盘容量只有5MB，重量超过100公斤。",
+        "Python 的流行很大程度归功于数据科学和机器学习库。"
+    ];
+    
+    let knowledgeCount = 0;
+    let currentIndex = -1;
+    
+    const knowledgeSpan = document.getElementById('knowledgeValue');
+    const typewriterDiv = document.getElementById('typewriterText');
+    
+    // 更新知识值 (每次点击+1)
+    function updateKnowledge() {
+        knowledgeCount++;
+        knowledgeSpan.innerText = knowledgeCount;
+    }
+    
+    // 打字机效果函数
+    async function typeWriter(text, element) {
+        element.innerHTML = '';     // 清空
+        for (let i = 0; i < text.length; i++) {
+            element.innerHTML += text.charAt(i);
+            // 动态延迟，模拟打字效果
+            await new Promise(resolve => setTimeout(resolve, 25));
+        }
+    }
+    
+    // 随机取一条知识（不与上次相同）
+    function getRandomFact() {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * facts.length);
+        } while (newIndex === currentIndex && facts.length > 1);
+        currentIndex = newIndex;
+        return facts[currentIndex];
+    }
+    
+    // 主要动作：随机知识 + 知识值 + 打字效果
+    async function addKnowledgeAndDisplay() {
+        updateKnowledge();          // 增加知识值
+        const fact = getRandomFact();
+        await typeWriter(fact, typewriterDiv);
+    }
+    
+    // 绑定按钮事件
+    const btn = document.getElementById('newFactBtn');
+    btn.addEventListener('click', addKnowledgeAndDisplay);
+    
+    // 页面加载后自动显示一条随机知识（不打字也可以，但为了一致性直接显示）
+    window.addEventListener('load', () => {
+        // 初始化随机一条（不打字太快，直接填充）
+        let initIndex = Math.floor(Math.random() * facts.length);
+        currentIndex = initIndex;
+        typewriterDiv.innerText = facts[initIndex];
+        knowledgeSpan.innerText = '0';
+        knowledgeCount = 0;
+    });
+</script>
+</body>
+</html>
