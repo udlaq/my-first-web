@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>疯狂点击 · 反应挑战</title>
+    <style>
+        * {
+            user-select: none;
+            touch-action: manipulation;
+        }
+        body {
+            background: linear-gradient(145deg, #1a2a3a, #0f1a24);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, monospace;
+            margin: 0;
+            padding: 16px;
+        }
+        .game-container {
+            background: #0b1219;
+            border-radius: 64px;
+            padding: 20px 16px 24px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background: #010a12;
+            padding: 12px 20px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            color: #0ff;
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px #0ff;
+            border: 1px solid #2c5f7a;
+        }
+        .score-board div span {
+            color: #ffd966;
+            font-size: 1.9rem;
+            margin-left: 8px;
+        }
+        canvas {
+            background: #021016;
+            display: block;
+            margin: 0 auto;
+            border-radius: 48px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 0 10px rgba(0,255,255,0.2);
+            cursor: pointer;
+            touch-action: none;
+            width: 100%;
+            height: auto;
+        }
+        button {
+            background: #2a4f6e;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px 28px;
+            margin-top: 20px;
+            border-radius: 60px;
+            width: 80%;
+            transition: 0.1s linear;
+            box-shadow: 0 5px 0 #0e2a3a;
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0e2a3a;
+        }
+        .info {
+            margin-top: 16px;
+            font-size: 0.7rem;
+            color: #5d8aa8;
+        }
+        a {
+            color: #6bb5ff;
+            text-decoration: none;
+        }
+        @media (max-width: 500px) {
+            .score-board { font-size: 1.2rem; }
+            .score-board div span { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="score-board">
+        <div>🎯 得分 <span id="scoreValue">0</span></div>
+        <div>⏱️ 剩余 <span id="timerValue">30</span>s</div>
+    </div>
+    <canvas id="gameCanvas" width="450" height="450" style="width:100%; height:auto; max-width:450px; aspect-ratio:1/1"></canvas>
+    <button id="resetBtn">🔄 重新开局</button>
+    <div class="info">
+        ✨ 点击闪烁的圆点 +1分 | 圆点会逃跑 ~ 手速越快分越高 ✨<br>
+        🧬 <a href="https://udlaq.github.io/my-first-web/">生物小栈</a> &nbsp;| 💻 <a href="https://udlaq.github.io/my-first-web/computer.html">计算机工坊</a>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ---------- DOM 元素 ----------
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreSpan = document.getElementById('scoreValue');
+        const timerSpan = document.getElementById('timerValue');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // 游戏状态
+        let score = 0;
+        let timeLeft = 30;     // 秒
+        let gameActive = true;  // 是否还在倒计时中
+        let animationId = null;
+        let countdownInterval = null;
+
+        // 目标圆点
+        let target = {
+            x: 200, y: 200,
+            r: 32,
+            visible: true
+        };
+
+        // 画布实际尺寸 (处理高分缩放)
+        let canvasWidth = 450, canvasHeight = 450;
+        
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            // 逻辑尺寸固定450x450，不需要改变实际像素
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+        }
+        
+        // 生成随机位置和半径 (半径20~45)
+        function randomTarget() {
+            const minR = 22;
+            const maxR = 48;
+            const r = Math.floor(Math.random() * (maxR - minR + 1) + minR);
+            const x = Math.random() * (canvasWidth - 2 * r) + r;
+            const y = Math.random() * (canvasHeight - 2 * r) + r;
+            return { x, y, r, visible: true };
+        }
+        
+        // 移动圆点 (每隔一定时间自动位移) 制造动态难度
+        let moveInterval = null;
+        
+        function startMovingDot() {
+            if (moveInterval) clearInterval(moveInterval);
+            moveInterval = setInterval(() => {
+                if (!gameActive) return;
+                // 每0.8秒随机挪动一次位置，若游戏活跃则刷新
+                if (target.visible) {
+                    const newPos = randomTarget();
+                    target.x = newPos.x;
+                    target.y = newPos.y;
+                    target.r = newPos.r;
+                }
+            }, 800);
+        }
+        
+        // 绘制游戏画面 (带发光特效)
+        function draw() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            // 背景网格
+            ctx.strokeStyle = '#1f4b6e';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < canvasWidth; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvasHeight);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvasWidth, i);
+                ctx.stroke();
+            }
+            
+            if (target.visible && gameActive) {
+                // 绘制外发光
+                ctx.shadowBlur = 18;
+                ctx.shadowColor = '#00ffff';
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffaa44';
+                ctx.fill();
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, target.r-4, 0, Math.PI*2);
+                ctx.fillStyle = '#ffdd99';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                // 眼睛特效
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(target.x - target.r*0.3, target.y - target.r*0.2, target.r*0.15, 0, Math.PI*2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(target.x + target.r*0.3, target.y - target.r*0.2, target.r*0.15, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(target.x - target.r*0.35, target.y - target.r*0.25, target.r*0.06, 0, Math.PI*2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(target.x + target.r*0.25, target.y - target.r*0.25, target.r*0.06, 0, Math.PI*2);
+                ctx.fill();
+            } else if (!gameActive && score >= 0) {
+                // 游戏结束画面
+                ctx.font = `bold ${Math.floor(canvasWidth/10)}px monospace`;
+                ctx.fillStyle = '#ffcc88';
+                ctx.shadowBlur = 0;
+                ctx.fillText('⏰ GAME OVER', canvasWidth/4, canvasHeight/2);
+                ctx.font = `18px system-ui`;
+                ctx.fillStyle = '#9bbbd0';
+                ctx.fillText(`最终得分: ${score}`, canvasWidth/2-70, canvasHeight/2+50);
+            }
+        }
+        
+        // 检查点击是否命中圆点 (坐标转换)
+        function handleTap(e) {
+            if (!gameActive) return false;
+            // 获取接触点相对于canvas的位置
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;   // 逻辑宽450 / 实际显示宽
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) {
+                // 触摸事件
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const canvasX = (clientX - rect.left) * scaleX;
+            const canvasY = (clientY - rect.top) * scaleY;
+            
+            // 计算与圆心距离
+            const dx = canvasX - target.x;
+            const dy = canvasY - target.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist <= target.r && target.visible && gameActive) {
+                // 命中！
+                score++;
+                scoreSpan.innerText = score;
+                // 立刻生成新圆点
+                target = randomTarget();
+                // 增加一点爽快感：临时闪烁效果会在draw体现，无需额外
+                return true;
+            }
+            return false;
+        }
+        
+        function onCanvasClick(e) {
+            handleTap(e);
+        }
+        
+        function onCanvasTouch(e) {
+            e.preventDefault();
+            handleTap(e);
+            return false;
+        }
+        
+        // 倒计时
+        function startTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                if (!gameActive) return;
+                if (timeLeft <= 1) {
+                    // 游戏结束
+                    gameActive = false;
+                    if (countdownInterval) clearInterval(countdownInterval);
+                    if (moveInterval) clearInterval(moveInterval);
+                    timerSpan.innerText = "0";
+                    draw();  // 显示结束画面
+                } else {
+                    timeLeft--;
+                    timerSpan.innerText = timeLeft;
+                    draw();
+                }
+            }, 1000);
+        }
+        
+        // 重置游戏所有变量
+        function resetGame() {
+            // 停止所有定时器
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (moveInterval) clearInterval(moveInterval);
+            if (animationId) cancelAnimationFrame(animationId);
+            
+            // 重置数值
+            score = 0;
+            timeLeft = 30;
+            gameActive = true;
+            scoreSpan.innerText = "0";
+            timerSpan.innerText = "30";
+            target = randomTarget();
+            
+            // 重启动画循环
+            function animate() {
+                draw();
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+            startTimer();
+            startMovingDot();
+        }
+        
+        // 初始化事件
+        function initEvents() {
+            canvas.addEventListener('click', onCanvasClick);
+            canvas.addEventListener('touchstart', onCanvasTouch, { passive: false });
+            resetBtn.addEventListener('click', () => { resetGame(); });
+        }
+        
+        // 首次启动
+        function init() {
+            resizeCanvas();
+            target = randomTarget();
+            gameActive = true;
+            score = 0;
+            timeLeft = 30;
+            scoreSpan.innerText = "0";
+            timerSpan.innerText = "30";
+            initEvents();
+            startTimer();
+            startMovingDot();
+            function animate() {
+                draw();
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+        
+        init();
+    })();
+</script>
+</body>
+</html>
