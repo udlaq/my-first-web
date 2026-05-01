@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的第一个网页</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0b3b3f 0%, #1f6d49 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 48px;
+            padding: 40px 24px;
+            max-width: 320px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+        }
+        h1 {
+            font-size: 2.2em;
+            color: #1f3b2c;
+            margin-bottom: 12px;
+        }
+        .emoji {
+            font-size: 64px;
+            margin: 16px 0;
+        }
+        p {
+            font-size: 1.2em;
+            color: #2c3e2f;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        button {
+            background: #2c7a4d;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        button:active {
+            transform: scale(0.97);
+            background: #1f5e3a;
+        }
+        footer {
+            margin-top: 32px;
+            font-size: 0.7em;
+            color: #2b4b2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="emoji">🌿🧬</div>
+        <h1>细胞小栈</h1>
+        <p id="fact">细胞是生命的基本单位</p>
+        <button onclick="changeFact()">📖 换一条知识</button>
+        <footer>🏞️ 你的第一个 GitHub 网页</footer>
+    </div>
+
+    <script>
+        const facts = [
+            "人体约有37万亿个细胞。",
+            "神经元是人体最长的细胞。",
+            "红细胞没有细胞核。",
+            "线粒体是细胞的“发电站”。",
+            "每天有500亿个细胞死亡。"
+        ];
+        function changeFact() {
+            let randomIndex = Math.floor(Math.random() * facts.length);
+            document.getElementById("fact").innerHTML = facts[randomIndex];
+        }
+    </script>
+</body>
+</html>
