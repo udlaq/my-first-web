@@ -3,44 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>2048 星河版</title>
+    <title>2048 增强版 - 音效·振动·星空背景</title>
     <style>
-        * { box-sizing: border-box; user-select: none; touch-action: manipulation; }
+        /* 基础样式 + 星空背景 */
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            touch-action: manipulation;
+        }
         body {
-            margin: 0; min-height: 100vh;
+            margin: 0;
+            min-height: 100vh;
             background: radial-gradient(ellipse at 20% 30%, #0a0f2a, #030617);
             font-family: 'Clear Sans', 'Segoe UI', Arial, sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            padding: 20px; position: relative; overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
+        /* 动态粒子层（星星） */
         body::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
-                              radial-gradient(1px 1px at 70px 120px, #f8f, rgba(0,0,0,0)),
-                              radial-gradient(3px 2px at 40px 70px, #ffd966, rgba(0,0,0,0)),
-                              radial-gradient(1px 2px at 90px 200px, #7bc5ff, rgba(0,0,0,0));
-            background-repeat: no-repeat; background-size: 200px 200px, 300px 300px, 250px 250px, 400px 400px;
-            opacity: 0.6; animation: starsMove 30s linear infinite; pointer-events: none;
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 70px 120px, #f8f, rgba(0,0,0,0)),
+                radial-gradient(3px 2px at 40px 70px, #ffd966, rgba(0,0,0,0)),
+                radial-gradient(1px 2px at 90px 200px, #7bc5ff, rgba(0,0,0,0));
+            background-repeat: no-repeat;
+            background-size: 200px 200px, 300px 300px, 250px 250px, 400px 400px;
+            opacity: 0.6;
+            animation: starsMove 30s linear infinite;
+            pointer-events: none;
         }
-        @keyframes starsMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px,-50px); } }
+        @keyframes starsMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, -50px); }
+        }
         .container {
-            width: 100%; max-width: 520px; background: rgba(20,30,45,0.5); backdrop-filter: blur(4px);
-            border-radius: 36px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2); z-index: 2;
+            width: 100%;
+            max-width: 520px;
+            background: rgba(20, 30, 45, 0.5);
+            backdrop-filter: blur(4px);
+            border-radius: 36px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 2;
         }
-        .heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        h1 { font-size: 3rem; margin: 0; color: #f9f6f2; text-shadow: 0 0 8px #ffaa44; }
-        .scores { display: flex; gap: 12px; }
-        .score-box, .best-box { background: #1e2a3a; padding: 5px 16px; border-radius: 16px; color: #f0f0f0; font-weight: bold; text-align: center; }
-        .score-box div:first-child, .best-box div:first-child { font-size: 12px; }
-        .score, .best { font-size: 28px; font-weight: bold; color: #ffd966; }
-        .new-game { background: #ff8c42; color: #1e2a3a; border: none; font-size: 1rem; font-weight: bold; padding: 8px 20px; border-radius: 40px; cursor: pointer; box-shadow: 0 4px 0 #b45f2b; transition: 0.05s linear; }
-        .new-game:active { transform: translateY(2px); box-shadow: 0 1px 0 #b45f2b; }
-        .game-container { position: relative; }
-        .grid-container { background: #3b4b5e; border-radius: 16px; padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; aspect-ratio: 1 / 1; box-shadow: inset 0 0 8px #1e2a3a, 0 8px 20px rgba(0,0,0,0.4); }
-        .grid-cell { background: rgba(30,45,60,0.8); border-radius: 12px; }
-        .tile-container { position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .tile { background: #eee4da; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; color: #776e65; transition: 0.08s linear; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #f9f6f2;
+            text-shadow: 0 0 8px #ffaa44;
+        }
+        .scores {
+            display: flex;
+            gap: 12px;
+        }
+        .score-box, .best-box {
+            background: #1e2a3a;
+            padding: 5px 16px;
+            border-radius: 16px;
+            color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .score-box div:first-child, .best-box div:first-child {
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        .score, .best {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd966;
+        }
+        .new-game {
+            background: #ff8c42;
+            color: #1e2a3a;
+            border: none;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #b45f2b;
+            transition: 0.05s linear;
+        }
+        .new-game:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #b45f2b;
+        }
+        .game-container {
+            position: relative;
+        }
+        .grid-container {
+            background: #3b4b5e;
+            border-radius: 16px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            aspect-ratio: 1 / 1;
+            box-shadow: inset 0 0 8px #1e2a3a, 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .grid-cell {
+            background: rgba(30, 45, 60, 0.8);
+            border-radius: 12px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .tile-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .tile {
+            background: #eee4da;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #776e65;
+            transition: 0.08s linear;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+        }
         .tile[data-value="2"] { background: #eee4da; }
         .tile[data-value="4"] { background: #ede0c8; }
         .tile[data-value="8"] { background: #f2b179; color: #f9f6f2; }
@@ -52,10 +161,43 @@
         .tile[data-value="512"] { background: #edc850; color: #f9f6f2; font-size: 1.6rem; }
         .tile[data-value="1024"] { background: #edc53f; color: #f9f6f2; font-size: 1.3rem; }
         .tile[data-value="2048"] { background: #edc22e; color: #f9f6f2; font-size: 1.3rem; }
-        .game-message { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(4px); }
-        .game-message p { background: #ff8c42; color: #1e2a3a; padding: 20px 40px; border-radius: 60px; font-size: 1.8rem; font-weight: bold; }
-        footer { text-align: center; margin-top: 20px; font-size: 0.7rem; color: #aaa; }
-        a { color: #ffaa66; }
+        .game-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+        }
+        .game-message p {
+            background: #ff8c42;
+            color: #1e2a3a;
+            padding: 20px 40px;
+            border-radius: 60px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 8px 20px black;
+        }
+        @media (max-width: 500px) {
+            .tile { font-size: 1.4rem; }
+            .tile[data-value="128"], .tile[data-value="256"], .tile[data-value="512"] { font-size: 1.2rem; }
+            .tile[data-value="1024"], .tile[data-value="2048"] { font-size: 1rem; }
+            h1 { font-size: 2.2rem; }
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: #aaa;
+        }
+        a {
+            color: #ffaa66;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +212,7 @@
     </div>
     <div class="game-container">
         <div class="grid-container" id="grid-container">
+            <!-- 16个网格背景 -->
             <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
             <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
             <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
@@ -77,113 +220,224 @@
             <div class="tile-container" id="tile-container"></div>
         </div>
     </div>
-    <footer>🎵 音效 + 振动 | 🌌 星空背景</footer>
+    <footer>
+        🎵 音效 + 振动 | 🌌 星空背景 | <a href="https://udlaq.github.io/my-first-web/">其他作品</a>
+    </footer>
 </div>
 <div class="game-message" id="game-message"><p id="message-text"></p></div>
+
 <script>
     (function(){
+        // ---------- 游戏逻辑 ----------
         let board = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
         let score = 0;
         let bestScore = localStorage.getItem('bestScore2048') ? parseInt(localStorage.getItem('bestScore2048')) : 0;
-        let gameWon = false, gameOver = false;
-        const scoreEl = document.getElementById('score'), bestEl = document.getElementById('best');
+        let gameWon = false;
+        let gameOver = false;
+
+        const scoreEl = document.getElementById('score');
+        const bestEl = document.getElementById('best');
         const tileContainer = document.getElementById('tile-container');
-        const messageBox = document.getElementById('game-message'), messageText = document.getElementById('message-text');
+        const messageBox = document.getElementById('game-message');
+        const messageText = document.getElementById('message-text');
         bestEl.innerText = bestScore;
 
+        // ---------- 音效 (Web Audio, 短促 beep) ----------
         let audioCtx = null;
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function initAudio() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
         function playBeep() {
-            if (!audioCtx) initAudio();
-            if (audioCtx.state === 'suspended') audioCtx.resume().then(()=>generateBeep());
-            else generateBeep();
+            if (!audioCtx) {
+                initAudio();
+            }
+            // 需要用户交互后 AudioContext 才能启动
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => {
+                    generateBeep();
+                });
+            } else {
+                generateBeep();
+            }
         }
         function generateBeep() {
             if (!audioCtx) return;
-            const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.frequency.value = 880; gain.gain.value = 0.2;
-            osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime+0.2);
-            osc.stop(audioCtx.currentTime+0.2);
+            const now = audioCtx.currentTime;
+            const oscillator = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            oscillator.connect(gain);
+            gain.connect(audioCtx.destination);
+            oscillator.frequency.value = 880; // 高音
+            gain.gain.value = 0.2;
+            oscillator.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
+            oscillator.stop(now + 0.2);
         }
-        function vibrateShort() { if (navigator.vibrate) navigator.vibrate(50); }
-        function onValidMove() { playBeep(); vibrateShort(); }
 
-        function updateBest() { if(score>bestScore){ bestScore=score; bestEl.innerText=bestScore; localStorage.setItem('bestScore2048',bestScore); } }
+        // ---------- 振动 ----------
+        function vibrateShort() {
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // 有效移动时触发音效+振动
+        function onValidMove() {
+            playBeep();
+            vibrateShort();
+        }
+
+        // ---------- 游戏核心 ----------
+        function updateBest() {
+            if (score > bestScore) {
+                bestScore = score;
+                bestEl.innerText = bestScore;
+                localStorage.setItem('bestScore2048', bestScore);
+            }
+        }
+
         function addRandomTile() {
             let empty = [];
-            for(let i=0;i<4;i++) for(let j=0;j<4;j++) if(board[i][j]===0) empty.push([i,j]);
-            if(empty.length===0) return;
-            let [x,y] = empty[Math.floor(Math.random()*empty.length)];
-            board[x][y] = Math.random()<0.9 ? 2 : 4;
+            for (let i=0; i<4; i++) {
+                for (let j=0; j<4; j++) {
+                    if (board[i][j] === 0) empty.push([i,j]);
+                }
+            }
+            if (empty.length === 0) return;
+            let [x,y] = empty[Math.floor(Math.random() * empty.length)];
+            board[x][y] = Math.random() < 0.9 ? 2 : 4;
         }
+
         function updateUI() {
             tileContainer.innerHTML = '';
-            for(let i=0;i<4;i++) for(let j=0;j<4;j++) {
-                let val = board[i][j];
-                let tile = document.createElement('div');
-                tile.className = 'tile';
-                if(val !== 0) { tile.setAttribute('data-value',val); tile.innerText = val; }
-                else tile.style.visibility = 'hidden';
-                tileContainer.appendChild(tile);
+            for (let i=0; i<4; i++) {
+                for (let j=0; j<4; j++) {
+                    let val = board[i][j];
+                    let tileDiv = document.createElement('div');
+                    tileDiv.className = 'tile';
+                    if (val !== 0) {
+                        tileDiv.setAttribute('data-value', val);
+                        tileDiv.innerText = val;
+                    } else {
+                        tileDiv.style.visibility = 'hidden';
+                    }
+                    tileContainer.appendChild(tileDiv);
+                }
             }
             scoreEl.innerText = score;
         }
+
         function move(direction) {
             let changed = false;
-            function rotate(n){
-                for(let r=0;r<n;r++){
-                    let newB = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-                    for(let i=0;i<4;i++) for(let j=0;j<4;j++) newB[j][3-i] = board[i][j];
-                    board = newB;
+            let oldBoard = JSON.parse(JSON.stringify(board));
+            // 辅助旋转
+            function rotate(n) {
+                for (let r=0; r<n; r++) {
+                    let newBoard = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+                    for (let i=0; i<4; i++)
+                        for (let j=0; j<4; j++)
+                            newBoard[j][3-i] = board[i][j];
+                    board = newBoard;
                 }
             }
-            function moveLeft(){
-                let ch = false;
-                for(let i=0;i<4;i++){
-                    let row = board[i].filter(v=>v!==0);
-                    for(let k=0;k<row.length-1;k++) if(row[k]===row[k+1]){ row[k]*=2; score+=row[k]; row.splice(k+1,1); ch=true; }
-                    while(row.length<4) row.push(0);
-                    if(JSON.stringify(board[i])!==JSON.stringify(row)) ch=true;
-                    board[i]=row;
+            function moveLeft() {
+                let changedLocal = false;
+                for (let i=0; i<4; i++) {
+                    let row = board[i].filter(v => v !== 0);
+                    for (let k=0; k<row.length-1; k++) {
+                        if (row[k] === row[k+1]) {
+                            row[k] *= 2;
+                            score += row[k];
+                            row.splice(k+1,1);
+                            changedLocal = true;
+                        }
+                    }
+                    while (row.length < 4) row.push(0);
+                    if (JSON.stringify(board[i]) !== JSON.stringify(row)) changedLocal = true;
+                    board[i] = row;
                 }
-                return ch;
+                return changedLocal;
             }
-            if(direction==='left') changed = moveLeft();
-            else if(direction==='right'){ rotate(2); changed = moveLeft(); rotate(2); }
-            else if(direction==='up'){ rotate(3); changed = moveLeft(); rotate(1); }
-            else if(direction==='down'){ rotate(1); changed = moveLeft(); rotate(3); }
-            if(changed){
-                onValidMove();
-                addRandomTile(); updateUI(); updateBest();
-                if(!gameWon) for(let i=0;i<4;i++) for(let j=0;j<4;j++) if(board[i][j]===2048){ gameWon=true; messageText.innerText='🎉 YOU WIN! 🎉'; messageBox.style.display='flex'; setTimeout(()=>messageBox.style.display='none',2500); }
-                let canMove=false;
-                outer: for(let i=0;i<4;i++) for(let j=0;j<4;j++){
-                    if(board[i][j]===0){ canMove=true; break outer; }
-                    if(j<3 && board[i][j]===board[i][j+1]){ canMove=true; break outer; }
-                    if(i<3 && board[i][j]===board[i+1][j]){ canMove=true; break outer; }
+            if (direction === 'left') changed = moveLeft();
+            else if (direction === 'right') { rotate(2); changed = moveLeft(); rotate(2); }
+            else if (direction === 'up') { rotate(3); changed = moveLeft(); rotate(1); }
+            else if (direction === 'down') { rotate(1); changed = moveLeft(); rotate(3); }
+            
+            if (changed) {
+                onValidMove();  // 播放音效 + 振动
+                addRandomTile();
+                updateUI();
+                updateBest();
+                // 胜利判定
+                if (!gameWon) {
+                    for (let i=0;i<4;i++) for (let j=0;j<4;j++) if (board[i][j] === 2048) {
+                        gameWon = true;
+                        messageText.innerText = '🎉 YOU WIN! 🎉';
+                        messageBox.style.display = 'flex';
+                        setTimeout(() => messageBox.style.display = 'none', 2500);
+                    }
                 }
-                if(!canMove && !gameOver){ gameOver=true; messageText.innerText='💀 GAME OVER 💀'; messageBox.style.display='flex'; }
+                // 失败判定
+                let canMove = false;
+                outer: for (let i=0;i<4;i++) for (let j=0;j<4;j++) {
+                    if (board[i][j] === 0) { canMove = true; break outer; }
+                    if (j<3 && board[i][j] === board[i][j+1]) { canMove = true; break outer; }
+                    if (i<3 && board[i][j] === board[i+1][j]) { canMove = true; break outer; }
+                }
+                if (!canMove && !gameOver) {
+                    gameOver = true;
+                    messageText.innerText = '💀 GAME OVER 💀';
+                    messageBox.style.display = 'flex';
+                }
             }
         }
-        function newGame(){
-            board=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]; score=0; gameWon=false; gameOver=false;
-            messageBox.style.display='none'; addRandomTile(); addRandomTile(); updateUI(); updateBest();
+
+        function newGame() {
+            board = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+            score = 0;
+            gameWon = false;
+            gameOver = false;
+            messageBox.style.display = 'none';
+            addRandomTile();
+            addRandomTile();
+            updateUI();
+            updateBest();
         }
-        let touchStart=null;
-        function handleTouchStart(e){ touchStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; e.preventDefault(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); }
-        function handleTouchEnd(e){
-            if(!touchStart) return;
-            let dx=e.changedTouches[0].clientX-touchStart.x, dy=e.changedTouches[0].clientY-touchStart.y;
-            if(Math.abs(dx)<20 && Math.abs(dy)<20) return;
-            if(Math.abs(dx)>Math.abs(dy)) dx>0 ? move('right') : move('left');
-            else dy>0 ? move('down') : move('up');
-            touchStart=null; e.preventDefault();
+
+        // ---------- 触摸控制 ----------
+        let touchStart = null;
+        function handleTouchStart(e) {
+            touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            e.preventDefault();
+            // 首次触摸时激活音频上下文（用户交互）
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+        function handleTouchEnd(e) {
+            if (!touchStart) return;
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+            let dx = endX - touchStart.x;
+            let dy = endY - touchStart.y;
+            if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 0) move('right');
+                else move('left');
+            } else {
+                if (dy > 0) move('down');
+                else move('up');
+            }
+            touchStart = null;
+            e.preventDefault();
         }
         const gridContainer = document.getElementById('grid-container');
-        gridContainer.addEventListener('touchstart', handleTouchStart, {passive:false});
+        gridContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
         gridContainer.addEventListener('touchend', handleTouchEnd);
-        document.getElementById('newGameBtn').addEventListener('click', ()=>{ newGame(); });
+        document.getElementById('newGameBtn').addEventListener('click', () => newGame());
+        
+        // 预初始化音频（但不自动启动，等待触摸）
         initAudio();
         newGame();
     })();
